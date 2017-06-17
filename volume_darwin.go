@@ -20,3 +20,11 @@ func parseVolume(out string) (int, error) {
 func setVolumeCmd(volume int) []string {
 	return []string{"osascript", "-e", "set volume output volume " + strconv.Itoa(volume)}
 }
+
+func muteCmd() []string {
+	return []string{"osascript", "-e", "set volume output muted true"}
+}
+
+func unmuteCmd() []string {
+	return []string{"osascript", "-e", "set volume output muted false"}
+}
