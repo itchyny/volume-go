@@ -31,3 +31,33 @@ func TestSetVolume(t *testing.T) {
 		}
 	}
 }
+
+func TestMute(t *testing.T) {
+	origMuted, err := GetMuted()
+	defer func() {
+		if origMuted {
+			Mute()
+		} else {
+			Unmute()
+		}
+	}()
+	if err != nil {
+		t.Errorf("get muted failed: %+v", err)
+	}
+	err = Mute()
+	if err != nil {
+		t.Errorf("mute failed: %+v", err)
+	}
+	muted, _ := GetMuted()
+	if !muted {
+		t.Errorf("mute failed: %t", muted)
+	}
+	err = Unmute()
+	if err != nil {
+		t.Errorf("unmute failed: %+v", err)
+	}
+	muted, _ = GetMuted()
+	if muted {
+		t.Errorf("unmute failed: %t", muted)
+	}
+}
