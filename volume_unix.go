@@ -34,3 +34,11 @@ func parseVolume(out string) (int, error) {
 func setVolumeCmd(volume int) []string {
 	return []string{"pactl", "set-sink-volume", "0", strconv.Itoa(volume) + "%"}
 }
+
+func muteCmd() []string {
+	return []string{"pactl", "set-sink-mute", "0", "1"}
+}
+
+func unmuteCmd() []string {
+	return []string{"pactl", "set-sink-mute", "0", "0"}
+}
