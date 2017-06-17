@@ -32,24 +32,24 @@ import (
 func main() {
 	vol, err := volume.GetVolume()
 	if err != nil {
-		log.Fatal("get volume failed: %+v", err)
+		log.Fatalf("get volume failed: %+v", err)
 	}
 	fmt.Printf("current volume: %d\n", vol)
 
 	err = volume.SetVolume(10)
 	if err != nil {
-		log.Fatal("set volume failed: %+v", err)
+		log.Fatalf("set volume failed: %+v", err)
 	}
 	fmt.Printf("set volume success\n")
 
 	err = volume.Mute()
 	if err != nil {
-		log.Fatal("mute failed: %+v", err)
+		log.Fatalf("mute failed: %+v", err)
 	}
 
 	err = volume.Unmute()
 	if err != nil {
-		log.Fatal("unmute failed: %+v", err)
+		log.Fatalf("unmute failed: %+v", err)
 	}
 }
 ```
