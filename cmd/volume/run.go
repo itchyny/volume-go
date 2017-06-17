@@ -3,44 +3,43 @@ package main
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
 	"github.com/itchyny/volume-go"
 )
 
-func run() error {
-	if len(os.Args) <= 1 {
+func run(args []string) error {
+	if len(args) == 0 {
 		return errors.New("no arg")
 	}
-	switch os.Args[1] {
+	switch args[0] {
 	case "-v", "version", "-version", "--version":
 		return printVersion()
 	case "-h", "help", "-help", "--help":
 		return printHelp()
 	case "status":
-		if len(os.Args) == 2 {
+		if len(args) == 1 {
 			return printStatus()
 		}
 	case "get":
-		if len(os.Args) == 2 {
+		if len(args) == 1 {
 			return getVolume()
 		}
 	case "set":
-		if len(os.Args) == 3 {
-			return setVolume(os.Args[2])
+		if len(args) == 2 {
+			return setVolume(args[1])
 		}
 	case "mute":
-		if len(os.Args) == 2 {
+		if len(args) == 1 {
 			return volume.Mute()
 		}
 	case "unmute":
-		if len(os.Args) == 2 {
+		if len(args) == 1 {
 			return volume.Unmute()
 		}
 	}
-	return fmt.Errorf("invalid argument for volume: %+v", os.Args[1:])
+	return fmt.Errorf("invalid argument for volume: %+v", args)
 }
 
 func printStatus() error {

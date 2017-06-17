@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"log"
+	"os"
+)
 
 var name = "volume"
 var version = "v0.0.0"
@@ -8,7 +11,7 @@ var description = "control audio volume"
 var author = "itchyny"
 
 func main() {
-	if err := run(); err != nil {
+	if err := run(os.Args[1:]); err != nil {
 		log.Fatal(err)
 	}
 }
