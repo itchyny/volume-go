@@ -29,3 +29,21 @@ func SetVolume(volume int) error {
 	_, err := cmd.Output()
 	return err
 }
+
+// Mute mutes the audio.
+func Mute() error {
+	cmdArgs := muteCmd()
+	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
+	cmd.Env = append(os.Environ(), cmdEnv()...)
+	_, err := cmd.Output()
+	return err
+}
+
+// Unmute unmutes the audio.
+func Unmute() error {
+	cmdArgs := unmuteCmd()
+	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
+	cmd.Env = append(os.Environ(), cmdEnv()...)
+	_, err := cmd.Output()
+	return err
+}
