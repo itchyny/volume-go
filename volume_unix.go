@@ -35,6 +35,25 @@ func setVolumeCmd(volume int) []string {
 	return []string{"pactl", "set-sink-volume", "0", strconv.Itoa(volume) + "%"}
 }
 
+func getMutedCmd() []string {
+	return []string{"pactl", "list", "sinks"}
+}
+
+func parseMuted(out string) (bool, error) {
+	lines := strings.Split(out, "\n")
+	for _, line := range lines {
+		s := strings.TrimLeft(line, " \t")
+		if strings.HasPrefix(s, "Mute: ") {
+			if strings.Contains(s, "yes") {
+				return true, nil
+			} else if strings.Contains(s, "no") {
+				return false, nil
+			}
+		}
+	}
+	return false, errors.New("no muted information found")
+}
+
 func muteCmd() []string {
 	return []string{"pactl", "set-sink-mute", "0", "1"}
 }
