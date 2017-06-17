@@ -14,6 +14,8 @@ func run() error {
 		return errors.New("no arg")
 	}
 	switch os.Args[1] {
+	case "-v", "version", "-version", "--version":
+		return printVersion()
 	case "status":
 		if len(os.Args) == 2 {
 			return printStatus()
@@ -67,4 +69,8 @@ func setVolume(volStr string) error {
 		return err
 	}
 	return volume.SetVolume(vol)
+}
+
+func printVersion() {
+	fmt.Printf("%s version %s\n", name, version)
 }
