@@ -30,6 +30,15 @@ func SetVolume(volume int) error {
 	return err
 }
 
+// GetMuted returns the current muted status.
+func GetMuted() (bool, error) {
+	out, err := execCmd(getMutedCmd())
+	if err != nil {
+		return false, err
+	}
+	return parseMuted(string(out))
+}
+
 // Mute mutes the audio.
 func Mute() error {
 	_, err := execCmd(muteCmd())
