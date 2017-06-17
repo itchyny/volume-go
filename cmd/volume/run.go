@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/itchyny/volume-go"
 )
@@ -16,6 +17,8 @@ func run() error {
 	switch os.Args[1] {
 	case "-v", "version", "-version", "--version":
 		return printVersion()
+	case "-h", "help", "-help", "--help":
+		return printHelp()
 	case "status":
 		if len(os.Args) == 2 {
 			return printStatus()
@@ -71,6 +74,30 @@ func setVolume(volStr string) error {
 	return volume.SetVolume(vol)
 }
 
-func printVersion() {
+func printVersion() error {
 	fmt.Printf("%s version %s\n", name, version)
+	return nil
+}
+
+func printHelp() error {
+	fmt.Printf(strings.Replace(`NAME:
+   $NAME - %s
+
+USAGE:
+   $NAME command [argument...]
+
+COMMANDS:
+   status     prints the volume status
+   get        prints the current volume
+   set [vol]  sets the audio volume
+   mute       mutes the audio
+   unmute     unmutes the audio
+
+VERSION:
+   %s
+
+AUTHOR:
+   %s
+`, "$NAME", name, -1), description, version, author)
+	return nil
 }
