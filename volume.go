@@ -6,6 +6,7 @@ import (
 	"os/exec"
 )
 
+// GetVolume returns the current volume (0 to 100).
 func GetVolume() (int, error) {
 	cmdArgs := getVolumeCmd()
 	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
@@ -17,6 +18,7 @@ func GetVolume() (int, error) {
 	return parseVolume(string(out))
 }
 
+// SetVolume sets the sound volume to the specified value.
 func SetVolume(volume int) error {
 	if volume < 0 || 100 < volume {
 		return errors.New("out of valid volume range")
