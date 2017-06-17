@@ -24,6 +24,16 @@ func run() error {
 			return setVolume(os.Args[2])
 		}
 		return errors.New("invalid argument for volume get")
+	case "mute":
+		if len(os.Args) == 2 {
+			return volume.Mute()
+		}
+		return errors.New("invalid argument for volume mute")
+	case "unmute":
+		if len(os.Args) == 2 {
+			return volume.Unmute()
+		}
+		return errors.New("invalid argument for volume unmute")
 	}
 	return fmt.Errorf("invalid argument for volume: %+v", os.Args[1:])
 }
