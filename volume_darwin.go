@@ -15,7 +15,11 @@ func getVolumeCmd() []string {
 }
 
 func parseVolume(out string) (int, error) {
-	return strconv.Atoi(strings.TrimSuffix(out, "\n"))
+	out = strings.TrimSuffix(out, "\n")
+	if out == "missing value" {
+		return 0, fmt.Errorf("failed to get volume settings: %s", out)
+	}
+	return strconv.Atoi(out)
 }
 
 func setVolumeCmd(volume int) []string {
