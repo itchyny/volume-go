@@ -2,12 +2,15 @@ package volume
 
 import (
 	"errors"
+	"os"
 	"os/exec"
 )
 
 func GetVolume() (int, error) {
-	cmds := getVolumeCmd()
-	out, err := exec.Command(cmds[0], cmds[1:]...).Output()
+	cmdArgs := getVolumeCmd()
+	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
+	cmd.Env = append(os.Environ(), cmdEnv()...)
+	out, err := cmd.Output()
 	if err != nil {
 		return 0, err
 	}
@@ -18,7 +21,9 @@ func SetVolume(volume int) error {
 	if volume < 0 || 100 < volume {
 		return errors.New("out of valid volume range")
 	}
-	cmds := setVolumeCmd(volume)
-	_, err := exec.Command(cmds[0], cmds[1:]...).Output()
+	cmdArgs := setVolumeCmd(volume)
+	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
+	cmd.Env = append(os.Environ(), cmdEnv()...)
+	_, err := cmd.Output()
 	return err
 }

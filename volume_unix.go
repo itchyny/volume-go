@@ -9,6 +9,10 @@ import (
 	"strings"
 )
 
+func cmdEnv() []string {
+	return []string{"LANG=C", "LC_ALL=C"}
+}
+
 func getVolumeCmd() []string {
 	return []string{"pactl", "list", "sinks"}
 }

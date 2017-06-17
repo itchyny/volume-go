@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+func cmdEnv() []string {
+	return nil
+}
+
 func getVolumeCmd() []string {
 	return []string{"osascript", "-e", "output volume of (get volume settings)"}
 }
