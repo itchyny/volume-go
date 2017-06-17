@@ -6,12 +6,15 @@ import (
 	"os/exec"
 )
 
-// GetVolume returns the current volume (0 to 100).
-func GetVolume() (int, error) {
-	cmdArgs := getVolumeCmd()
+func execCmd(cmdArgs []string) ([]byte, error) {
 	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 	cmd.Env = append(os.Environ(), cmdEnv()...)
-	out, err := cmd.Output()
+	return cmd.Output()
+}
+
+// GetVolume returns the current volume (0 to 100).
+func GetVolume() (int, error) {
+	out, err := execCmd(getVolumeCmd())
 	if err != nil {
 		return 0, err
 	}
@@ -23,27 +26,18 @@ func SetVolume(volume int) error {
 	if volume < 0 || 100 < volume {
 		return errors.New("out of valid volume range")
 	}
-	cmdArgs := setVolumeCmd(volume)
-	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
-	cmd.Env = append(os.Environ(), cmdEnv()...)
-	_, err := cmd.Output()
+	_, err := execCmd(setVolumeCmd(volume))
 	return err
 }
 
 // Mute mutes the audio.
 func Mute() error {
-	cmdArgs := muteCmd()
-	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
-	cmd.Env = append(os.Environ(), cmdEnv()...)
-	_, err := cmd.Output()
+	_, err := execCmd(muteCmd())
 	return err
 }
 
 // Unmute unmutes the audio.
 func Unmute() error {
-	cmdArgs := unmuteCmd()
-	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
-	cmd.Env = append(os.Environ(), cmdEnv()...)
-	_, err := cmd.Output()
+	_, err := execCmd(unmuteCmd())
 	return err
 }
