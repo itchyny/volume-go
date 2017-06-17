@@ -17,7 +17,7 @@ test: testdeps build
 testdeps:
 	go get -d -v -t ./...
 
-lint: testdeps
+lint: lintdeps
 	go vet
 	golint -set_exit_status ./...
 
