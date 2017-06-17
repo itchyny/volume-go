@@ -1,4 +1,4 @@
-# volume-go
+# volume-go [![Travis Build Status](https://travis-ci.org/itchyny/volume-go.svg?branch=master)](https://travis-ci.org/itchyny/volume-go) [![Go Report Card](https://goreportcard.com/badge/github.com/itchyny/volume-go)](https://goreportcard.com/report/github.com/itchyny/volume-go) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/itchyny/volume-go/blob/master/LICENSE) [![GoDoc](https://godoc.org/github.com/itchyny/volume-go?status.svg)](https://godoc.org/github.com/itchyny/volume-go)
 ### Volume control in Go
 This is a Go language package for controlling audio volume.
 
