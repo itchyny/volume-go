@@ -12,7 +12,8 @@ deps:
 	go get -d -v ./...
 
 test: testdeps build
-	go test -v ./...
+	go test -v .
+	go test -v ./cmd/volume
 
 testdeps:
 	go get -d -v -t ./...
