@@ -11,7 +11,7 @@ var description = "control audio volume"
 var author = "itchyny"
 
 func main() {
-	if err := run(os.Args[1:]); err != nil {
+	if err := run(os.Args[1:], os.Stdout); err != nil {
 		log.Fatal(err)
 	}
 }

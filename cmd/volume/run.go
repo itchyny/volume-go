@@ -3,28 +3,29 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"strconv"
 	"strings"
 
 	"github.com/itchyny/volume-go"
 )
 
-func run(args []string) error {
+func run(args []string, out io.Writer) error {
 	if len(args) == 0 {
 		return errors.New("no arg")
 	}
 	switch args[0] {
 	case "-v", "version", "-version", "--version":
-		return printVersion()
+		return printVersion(out)
 	case "-h", "help", "-help", "--help":
-		return printHelp()
+		return printHelp(out)
 	case "status":
 		if len(args) == 1 {
-			return printStatus()
+			return printStatus(out)
 		}
 	case "get":
 		if len(args) == 1 {
-			return getVolume()
+			return getVolume(out)
 		}
 	case "set":
 		if len(args) == 2 {
@@ -54,7 +55,7 @@ func run(args []string) error {
 	return fmt.Errorf("invalid argument for volume: %+v", args)
 }
 
-func printStatus() error {
+func printStatus(out io.Writer) error {
 	vol, err := volume.GetVolume()
 	if err != nil {
 		return err
@@ -63,17 +64,17 @@ func printStatus() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("volume: %d\n", vol)
-	fmt.Printf("muted: %t\n", muted)
+	fmt.Fprintf(out, "volume: %d\n", vol)
+	fmt.Fprintf(out, "muted: %t\n", muted)
 	return nil
 }
 
-func getVolume() error {
+func getVolume(out io.Writer) error {
 	vol, err := volume.GetVolume()
 	if err != nil {
 		return err
 	}
-	fmt.Println(vol)
+	fmt.Fprintln(out, vol)
 	return nil
 }
 
@@ -101,13 +102,13 @@ func downVolume(diffStr string) error {
 	return volume.IncreaseVolume(-diff)
 }
 
-func printVersion() error {
-	fmt.Printf("%s version %s\n", name, version)
+func printVersion(out io.Writer) error {
+	fmt.Fprintf(out, "%s version %s\n", name, version)
 	return nil
 }
 
-func printHelp() error {
-	fmt.Printf(strings.Replace(`NAME:
+func printHelp(out io.Writer) error {
+	fmt.Fprintf(out, strings.Replace(`NAME:
    $NAME - %s
 
 USAGE:
