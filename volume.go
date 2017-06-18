@@ -30,6 +30,12 @@ func SetVolume(volume int) error {
 	return err
 }
 
+// IncreaseVolume increases (or decreases) the audio volume by the specified value.
+func IncreaseVolume(diff int) error {
+	_, err := execCmd(increaseVolumeCmd(diff))
+	return err
+}
+
 // GetMuted returns the current muted status.
 func GetMuted() (bool, error) {
 	out, err := execCmd(getMutedCmd())
