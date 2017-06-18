@@ -1,4 +1,4 @@
-// +build linux freebsd netbsd
+// +build !windows,!darwin
 
 package volume
 
