@@ -56,7 +56,7 @@ func GetMuted() (bool, error) {
 		err := aev.GetMute(&muted)
 		return muted, err
 	})
-	if muted != nil {
+	if muted == nil {
 		return false, err
 	}
 	return muted.(bool), err
