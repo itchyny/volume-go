@@ -115,11 +115,15 @@ USAGE:
    $NAME command [argument...]
 
 COMMANDS:
-   status     prints the volume status
-   get        prints the current volume
-   set [vol]  sets the audio volume
-   mute       mutes the audio
-   unmute     unmutes the audio
+   status      prints the volume status
+   get         prints the current volume
+   set [vol]   sets the audio volume
+   up [diff]   volume up by [diff]
+   down [diff] volume down by [diff]
+   mute        mutes the audio
+   unmute      unmutes the audio
+   version     prints the version
+   help        prints this help
 
 VERSION:
    %s
