@@ -42,11 +42,53 @@ func TestSetVolume(t *testing.T) {
 		}
 		v, err := GetVolume()
 		if err != nil {
-			t.Errorf("set volume failed: %+v", err)
+			t.Errorf("get volume failed: %+v", err)
 		}
 		if vol != v {
 			t.Errorf("set volume failed: (got: %+v, expected: %+v)", v, vol)
 		}
+	}
+}
+
+func TestIncreaseVolume(t *testing.T) {
+	vol := 17
+	diff := 3
+	err := SetVolume(vol)
+	if err != nil {
+		t.Errorf("set volume failed: %+v", err)
+	}
+	err = IncreaseVolume(diff)
+	if err != nil {
+		t.Errorf("increase volume failed: %+v", err)
+	}
+	v, err := GetVolume()
+	if err != nil {
+		t.Errorf("get volume failed: %+v", err)
+	}
+	if v != vol+diff {
+		t.Errorf("increase volume failed: (got: %+v, expected: %+v)", v, vol+diff)
+	}
+	err = IncreaseVolume(-diff)
+	if err != nil {
+		t.Errorf("increase volume failed: %+v", err)
+	}
+	v, err = GetVolume()
+	if err != nil {
+		t.Errorf("get volume failed: %+v", err)
+	}
+	if v != vol {
+		t.Errorf("increase volume failed: (got: %+v, expected: %+v)", v, vol)
+	}
+	err = IncreaseVolume(-100)
+	if err != nil {
+		t.Errorf("increase volume failed: %+v", err)
+	}
+	v, err = GetVolume()
+	if err != nil {
+		t.Errorf("get volume failed: %+v", err)
+	}
+	if v != 0 {
+		t.Errorf("increase volume failed: (got: %+v, expected: %+v)", v, 0)
 	}
 }
 
