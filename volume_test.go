@@ -1,8 +1,31 @@
 package volume
 
 import (
+	"fmt"
+	"os"
 	"testing"
 )
+
+func TestMain(m *testing.M) {
+	origVolume, err := GetVolume()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "get volume failed: %+v\n", err)
+		os.Exit(1)
+	}
+	origMuted, err := GetMuted()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "get muted failed: %+v\n", err)
+		os.Exit(1)
+	}
+	code := m.Run()
+	_ = SetVolume(origVolume)
+	if origMuted {
+		_ = Mute()
+	} else {
+		_ = Unmute()
+	}
+	os.Exit(code)
+}
 
 func TestGetVolume(t *testing.T) {
 	_, err := GetVolume()
@@ -12,13 +35,8 @@ func TestGetVolume(t *testing.T) {
 }
 
 func TestSetVolume(t *testing.T) {
-	vol, err := GetVolume()
-	defer SetVolume(vol)
-	if err != nil {
-		t.Errorf("get volume failed: %+v", err)
-	}
 	for _, vol := range []int{0, 37, 54, 20, 10} {
-		err = SetVolume(vol)
+		err := SetVolume(vol)
 		if err != nil {
 			t.Errorf("set volume failed: %+v", err)
 		}
@@ -33,30 +51,28 @@ func TestSetVolume(t *testing.T) {
 }
 
 func TestMute(t *testing.T) {
-	origMuted, err := GetMuted()
-	defer func() {
-		if origMuted {
-			Mute()
-		} else {
-			Unmute()
-		}
-	}()
-	if err != nil {
-		t.Errorf("get muted failed: %+v", err)
-	}
-	err = Mute()
+	err := Mute()
 	if err != nil {
 		t.Errorf("mute failed: %+v", err)
 	}
-	muted, _ := GetMuted()
+	muted, err := GetMuted()
+	if err != nil {
+		t.Errorf("get muted failed: %+v", err)
+	}
 	if !muted {
 		t.Errorf("mute failed: %t", muted)
 	}
-	err = Unmute()
+}
+
+func TestUnmute(t *testing.T) {
+	err := Unmute()
 	if err != nil {
 		t.Errorf("unmute failed: %+v", err)
 	}
-	muted, _ = GetMuted()
+	muted, err := GetMuted()
+	if err != nil {
+		t.Errorf("get muted failed: %+v", err)
+	}
 	if muted {
 		t.Errorf("unmute failed: %t", muted)
 	}
