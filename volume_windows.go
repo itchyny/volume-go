@@ -36,8 +36,17 @@ func SetVolume(volume int) error {
 
 // IncreaseVolume increases (or decreases) the audio volume by the specified value.
 func IncreaseVolume(diff int) error {
-	panic("not implemented on Windows")
-	return nil
+	_, err := invoke(func(aev *wca.IAudioEndpointVolume) (interface{}, error) {
+		var level float32
+		err := aev.GetMasterVolumeLevelScalar(&level)
+		if err != nil {
+			return nil, err
+		}
+		vol := math.Min(math.Max(math.Floor(float64(level*100.0+0.5))+float64(diff), 0.0), 100.0)
+		err = aev.SetMasterVolumeLevelScalar(float32(vol)/100, nil)
+		return nil, err
+	})
+	return err
 }
 
 // GetMuted returns the current muted status.
