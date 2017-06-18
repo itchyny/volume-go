@@ -30,6 +30,18 @@ func run(args []string) error {
 		if len(args) == 2 {
 			return setVolume(args[1])
 		}
+	case "up":
+		if len(args) == 1 {
+			return upVolume("6")
+		} else if len(args) == 2 {
+			return upVolume(args[1])
+		}
+	case "down":
+		if len(args) == 1 {
+			return downVolume("6")
+		} else if len(args) == 2 {
+			return downVolume(args[1])
+		}
 	case "mute":
 		if len(args) == 1 {
 			return volume.Mute()
@@ -71,6 +83,22 @@ func setVolume(volStr string) error {
 		return err
 	}
 	return volume.SetVolume(vol)
+}
+
+func upVolume(diffStr string) error {
+	diff, err := strconv.Atoi(diffStr)
+	if err != nil {
+		return err
+	}
+	return volume.IncreaseVolume(diff)
+}
+
+func downVolume(diffStr string) error {
+	diff, err := strconv.Atoi(diffStr)
+	if err != nil {
+		return err
+	}
+	return volume.IncreaseVolume(-diff)
 }
 
 func printVersion() error {
