@@ -13,7 +13,7 @@ func GetVolume() (int, error) {
 	vol, err := invoke(func(aev *wca.IAudioEndpointVolume) (interface{}, error) {
 		var level float32
 		err := aev.GetMasterVolumeLevelScalar(&level)
-		vol := math.Floor(float64(level*100.0 + 0.5))
+		vol := int(math.Floor(float64(level*100.0 + 0.5)))
 		return vol, err
 	})
 	if vol == nil {
