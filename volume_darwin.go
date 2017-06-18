@@ -26,6 +26,10 @@ func setVolumeCmd(volume int) []string {
 	return []string{"osascript", "-e", "set volume output volume " + strconv.Itoa(volume)}
 }
 
+func increaseVolumeCmd(diff int) []string {
+	return []string{"osascript", "-e", "set volume output volume ((output volume of (get volume settings)) + " + strconv.Itoa(diff) + ")"}
+}
+
 func getMutedCmd() []string {
 	return []string{"osascript", "-e", "output muted of (get volume settings)"}
 }

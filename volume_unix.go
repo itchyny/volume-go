@@ -35,6 +35,14 @@ func setVolumeCmd(volume int) []string {
 	return []string{"pactl", "set-sink-volume", "0", strconv.Itoa(volume) + "%"}
 }
 
+func increaseVolumeCmd(diff int) []string {
+	var sign string
+	if diff >= 0 {
+		sign = "+"
+	}
+	return []string{"pactl", "--", "set-sink-volume", "0", sign + strconv.Itoa(diff) + "%"}
+}
+
 func getMutedCmd() []string {
 	return []string{"pactl", "list", "sinks"}
 }
