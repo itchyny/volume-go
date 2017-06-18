@@ -64,14 +64,20 @@ func GetMuted() (bool, error) {
 
 // Mute mutes the audio.
 func Mute() error {
-	panic("not implemented on Windows")
-	return nil
+	_, err := invoke(func(aev *wca.IAudioEndpointVolume) (interface{}, error) {
+		err := aev.SetMute(true, nil)
+		return nil, err
+	})
+	return err
 }
 
 // Unmute unmutes the audio.
 func Unmute() error {
-	panic("not implemented on Windows")
-	return nil
+	_, err := invoke(func(aev *wca.IAudioEndpointVolume) (interface{}, error) {
+		err := aev.SetMute(false, nil)
+		return nil, err
+	})
+	return err
 }
 
 func invoke(f func(aev *wca.IAudioEndpointVolume) (interface{}, error)) (ret interface{}, err error) {
