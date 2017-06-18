@@ -2,14 +2,20 @@ package volume
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func execCmd(cmdArgs []string) ([]byte, error) {
 	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 	cmd.Env = append(os.Environ(), cmdEnv()...)
-	return cmd.Output()
+	out, err := cmd.Output()
+	if err != nil {
+		err = fmt.Errorf(`failed to execute "%v" (%+v)`, strings.Join(cmdArgs, " "), err)
+	}
+	return out, err
 }
 
 // GetVolume returns the current volume (0 to 100).
