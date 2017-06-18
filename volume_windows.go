@@ -51,8 +51,15 @@ func IncreaseVolume(diff int) error {
 
 // GetMuted returns the current muted status.
 func GetMuted() (bool, error) {
-	panic("not implemented on Windows")
-	return false, nil
+	muted, err := invoke(func(aev *wca.IAudioEndpointVolume) (interface{}, error) {
+		var muted bool
+		err := aev.GetMute(&muted)
+		return muted, err
+	})
+	if muted != nil {
+		return false, err
+	}
+	return muted.(bool), err
 }
 
 // Mute mutes the audio.
