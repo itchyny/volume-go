@@ -2,6 +2,7 @@ package volume
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"testing"
 )
@@ -45,7 +46,11 @@ func TestSetVolume(t *testing.T) {
 			t.Errorf("get volume failed: %+v", err)
 		}
 		if vol != v {
-			t.Errorf("set volume failed: (got: %+v, expected: %+v)", v, vol)
+			if math.Abs(float64(v-vol)) > 4 {
+				t.Errorf("set volume failed: (got: %+v, expected: %+v)", v, vol)
+			} else {
+				t.Logf("set volume difference (possibly amixer on Linux): (got: %+v, expected: %+v)", v, vol)
+			}
 		}
 	}
 }
@@ -66,7 +71,11 @@ func TestIncreaseVolume(t *testing.T) {
 		t.Errorf("get volume failed: %+v", err)
 	}
 	if v != vol+diff {
-		t.Errorf("increase volume failed: (got: %+v, expected: %+v)", v, vol+diff)
+		if vol := vol + diff; math.Abs(float64(v-vol)) > 4 {
+			t.Errorf("increase volume failed: (got: %+v, expected: %+v)", v, vol)
+		} else {
+			t.Logf("increase volume difference (possibly amixer on Linux): (got: %+v, expected: %+v)", v, vol)
+		}
 	}
 	err = IncreaseVolume(-diff)
 	if err != nil {
@@ -77,7 +86,11 @@ func TestIncreaseVolume(t *testing.T) {
 		t.Errorf("get volume failed: %+v", err)
 	}
 	if v != vol {
-		t.Errorf("increase volume failed: (got: %+v, expected: %+v)", v, vol)
+		if math.Abs(float64(v-vol)) > 4 {
+			t.Errorf("increase volume failed: (got: %+v, expected: %+v)", v, vol)
+		} else {
+			t.Logf("increase volume difference (possibly amixer on Linux): (got: %+v, expected: %+v)", v, vol)
+		}
 	}
 	err = IncreaseVolume(-100)
 	if err != nil {
