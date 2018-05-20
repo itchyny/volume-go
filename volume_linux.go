@@ -4,16 +4,28 @@ package volume
 
 import (
 	"errors"
+	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
 )
+
+var useAmixer bool
+
+func init() {
+	if _, err := exec.LookPath("pactl"); err != nil {
+		useAmixer = true
+	}
+}
 
 func cmdEnv() []string {
 	return []string{"LANG=C", "LC_ALL=C"}
 }
 
 func getVolumeCmd() []string {
+	if useAmixer {
+		return []string{"amixer", "get", "Master"}
+	}
 	return []string{"pactl", "list", "sinks"}
 }
 
@@ -23,7 +35,8 @@ func parseVolume(out string) (int, error) {
 	lines := strings.Split(out, "\n")
 	for _, line := range lines {
 		s := strings.TrimLeft(line, " \t")
-		if strings.HasPrefix(s, "Volume: 0:") {
+		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
+			!useAmixer && strings.HasPrefix(s, "Volume: 0:") {
 			volumeStr := volumePattern.FindString(s)
 			return strconv.Atoi(volumeStr[:len(volumeStr)-1])
 		}
@@ -32,6 +45,9 @@ func parseVolume(out string) (int, error) {
 }
 
 func setVolumeCmd(volume int) []string {
+	if useAmixer {
+		return []string{"amixer", "set", "Master", strconv.Itoa(volume) + "%"}
+	}
 	return []string{"pactl", "set-sink-volume", "0", strconv.Itoa(volume) + "%"}
 }
 
@@ -39,11 +55,20 @@ func increaseVolumeCmd(diff int) []string {
 	var sign string
 	if diff >= 0 {
 		sign = "+"
+	} else if useAmixer {
+		diff = -diff
+		sign = "-"
+	}
+	if useAmixer {
+		return []string{"amixer", "set", "Master", strconv.Itoa(diff) + "%" + sign}
 	}
 	return []string{"pactl", "--", "set-sink-volume", "0", sign + strconv.Itoa(diff) + "%"}
 }
 
 func getMutedCmd() []string {
+	if useAmixer {
+		return []string{"amixer", "get", "Master"}
+	}
 	return []string{"pactl", "list", "sinks"}
 }
 
@@ -51,10 +76,11 @@ func parseMuted(out string) (bool, error) {
 	lines := strings.Split(out, "\n")
 	for _, line := range lines {
 		s := strings.TrimLeft(line, " \t")
-		if strings.HasPrefix(s, "Mute: ") {
-			if strings.Contains(s, "yes") {
+		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
+			!useAmixer && strings.HasPrefix(s, "Mute: ") {
+			if strings.Contains(s, "[off]") || strings.Contains(s, "yes") {
 				return true, nil
-			} else if strings.Contains(s, "no") {
+			} else if strings.Contains(s, "[on]") || strings.Contains(s, "no") {
 				return false, nil
 			}
 		}
@@ -63,9 +89,15 @@ func parseMuted(out string) (bool, error) {
 }
 
 func muteCmd() []string {
+	if useAmixer {
+		return []string{"amixer", "-D", "pulse", "set", "Master", "mute"}
+	}
 	return []string{"pactl", "set-sink-mute", "0", "1"}
 }
 
 func unmuteCmd() []string {
+	if useAmixer {
+		return []string{"amixer", "-D", "pulse", "set", "Master", "unmute"}
+	}
 	return []string{"pactl", "set-sink-mute", "0", "0"}
 }
