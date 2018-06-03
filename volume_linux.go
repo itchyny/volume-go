@@ -36,10 +36,7 @@ func parseVolume(out string) (int, error) {
 	for _, line := range lines {
 		s := strings.TrimLeft(line, " \t")
 		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
-			!useAmixer && strings.HasPrefix(s, "Volume: 0:") {
-			volumeStr := volumePattern.FindString(s)
-			return strconv.Atoi(volumeStr[:len(volumeStr)-1])
-		} else if strings.HasPrefix(s, "Volume:") {
+			!useAmixer && strings.HasPrefix(s, "Volume:") {
 			volumeStr := volumePattern.FindString(s)
 			return strconv.Atoi(volumeStr[:len(volumeStr)-1])
 		}
