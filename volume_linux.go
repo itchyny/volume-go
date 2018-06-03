@@ -39,6 +39,9 @@ func parseVolume(out string) (int, error) {
 			!useAmixer && strings.HasPrefix(s, "Volume: 0:") {
 			volumeStr := volumePattern.FindString(s)
 			return strconv.Atoi(volumeStr[:len(volumeStr)-1])
+		} else if strings.HasPrefix(s, "Volume:") {
+			volumeStr := volumePattern.FindString(s)
+			return strconv.Atoi(volumeStr[:len(volumeStr)-1])
 		}
 	}
 	return 0, errors.New("no volume found")
