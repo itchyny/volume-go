@@ -3,25 +3,74 @@
 This is a Go language package for controlling audio volume.
 
 ## CLI tool usage
+
+#### install
+
 ```sh
  $ go get -u github.com/itchyny/volume-go/cmd/volume
- $ volume get
-25
- $ volume set 20
- $ volume get
+```
+
+#### get
+
+Gets current volume.
+
+```sh
+ $ volume get 
 20
- $ volume down
+```
+
+#### set
+
+Set volume to specified amount.
+
+```sh
+ $ volume set 40
  $ volume status
-volume: 14
+volume: 40
 muted: false
+```
+
+#### up/down
+
+Increase/decrease volume by specified amount, default 6.
+
+```sh
+ $ volume get
+40
  $ volume up
+ $ volume get
+46
+
+ $ volume up 4
+ $ volume get
+50
+
+ $ volume down
+ $ volume get
+44
+ $ volume down 4
+ $ volume get
+40
+```
+
+#### status
+
+Get current volume and is muted.
+
+```sh
  $ volume status
 volume: 20
 muted: false
+```
+
+#### mute/unmute
+
+```sh
  $ volume mute
  $ volume status
 volume: 20
 muted: true
+
  $ volume unmute
  $ volume status
 volume: 20
