@@ -1,4 +1,4 @@
-BIN = volume
+BIN := volume
 
 .PHONY: all
 all: clean build
