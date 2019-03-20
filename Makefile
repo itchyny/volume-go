@@ -18,7 +18,8 @@ deps:
 
 .PHONY: test
 test: build
-	go test -v ./...
+	go test -v .
+	go test -v ./cmd/$(BIN)
 
 .PHONY: lint
 lint: lintdeps
