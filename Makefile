@@ -1,4 +1,5 @@
 BIN := volume
+export GO111MODULE=on
 
 .PHONY: all
 all: clean build
@@ -16,23 +17,17 @@ deps:
 	go get -d -v ./...
 
 .PHONY: test
-test: testdeps build
-	go test -v .
-	go test -v ./cmd/volume
-
-.PHONY: testdeps
-testdeps:
-	go get -d -v -t ./...
+test: build
+	go test -v ./...
 
 .PHONY: lint
 lint: lintdeps
-	go vet
+	go vet ./...
 	golint -set_exit_status ./...
 
 .PHONY: lintdeps
 lintdeps:
-	go get -d -v -t .
-	command -v golint >/dev/null || go get -u golang.org/x/lint/golint
+	GO111MODULE=off go get -u golang.org/x/lint/golint
 
 .PHONY: clean
 clean:
