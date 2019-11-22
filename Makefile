@@ -1,4 +1,5 @@
 BIN := volume
+GOBIN ?= $(shell go env GOPATH)/bin
 export GO111MODULE=on
 
 .PHONY: all
@@ -18,12 +19,11 @@ test: build
 	go test -v ./cmd/$(BIN)
 
 .PHONY: lint
-lint: lintdeps
+lint: $(GOBIN)/golint
 	go vet ./...
 	golint -set_exit_status ./...
 
-.PHONY: lintdeps
-lintdeps:
+$(GOBIN)/golint:
 	cd && go get golang.org/x/lint/golint
 
 .PHONY: clean
