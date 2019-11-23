@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-	"strings"
 
 	"github.com/itchyny/volume-go"
 )
@@ -108,11 +107,10 @@ func printVersion(out io.Writer) error {
 }
 
 func printHelp(out io.Writer) error {
-	fmt.Fprintf(out, strings.Replace(`NAME:
-   $NAME - %s
+	fmt.Fprintf(out, `%[1]s - %[2]s
 
 USAGE:
-   $NAME command [argument...]
+   %[1]s command [argument...]
 
 COMMANDS:
    status      prints the volume status
@@ -126,10 +124,10 @@ COMMANDS:
    help        prints this help
 
 VERSION:
-   %s
+   %[3]s
 
 AUTHOR:
-   %s
-`, "$NAME", name, -1), description, version, author)
+   %[4]s
+`, name, description, version, author)
 	return nil
 }
