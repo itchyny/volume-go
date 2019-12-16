@@ -102,7 +102,7 @@ func downVolume(diffStr string) error {
 }
 
 func printVersion(out io.Writer) error {
-	fmt.Fprintf(out, "%s version %s\n", name, version)
+	fmt.Fprintf(out, "%s %s\n", name, version)
 	return nil
 }
 

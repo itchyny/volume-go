@@ -6,7 +6,7 @@ import (
 )
 
 var name = "volume"
-var version = "v0.0.0"
+var version = "0.0.0"
 var description = "control audio volume"
 var author = "itchyny"
 
