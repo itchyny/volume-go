@@ -38,8 +38,8 @@ func TestRunVersion(t *testing.T) {
 	if err := run([]string{"version"}, out); err != nil {
 		t.Errorf("version failed: %+v", err)
 	}
-	if !strings.Contains(out.String(), "volume version ") {
-		t.Errorf("version failed: (got: %+v, expected to contain: %+v)", out.String(), "volume version ")
+	if !strings.Contains(out.String(), "volume ") {
+		t.Errorf("version failed: (got: %+v, expected to contain: %+v)", out.String(), "volume ")
 	}
 }
 
