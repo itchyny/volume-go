@@ -7,7 +7,7 @@ This is a Go language package for controlling audio volume.
 #### install
 
 ```sh
- $ go get -u github.com/itchyny/volume-go/cmd/volume
+go get github.com/itchyny/volume-go/cmd/volume
 ```
 
 #### get
