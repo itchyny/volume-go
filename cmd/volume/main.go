@@ -5,10 +5,11 @@ import (
 	"os"
 )
 
-var name = "volume"
-var version = "0.0.0"
-var description = "control audio volume"
-var author = "itchyny"
+const name = "volume"
+const version = "0.0.0"
+const author = "itchyny"
+
+var revision = "HEAD"
 
 func main() {
 	if err := run(os.Args[1:], os.Stdout); err != nil {

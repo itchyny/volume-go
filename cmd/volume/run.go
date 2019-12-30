@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"runtime"
 	"strconv"
 
 	"github.com/itchyny/volume-go"
@@ -102,32 +103,32 @@ func downVolume(diffStr string) error {
 }
 
 func printVersion(out io.Writer) error {
-	fmt.Fprintf(out, "%s %s\n", name, version)
+	fmt.Fprintf(out, "%s %s (rev: %s/%s)\n", name, version, revision, runtime.Version())
 	return nil
 }
 
 func printHelp(out io.Writer) error {
-	fmt.Fprintf(out, `%[1]s - %[2]s
+	fmt.Fprintf(out, `%[1]s - control audio volume
 
 USAGE:
-   %[1]s command [argument...]
+  %[1]s command [argument...]
 
 COMMANDS:
-   status      prints the volume status
-   get         prints the current volume
-   set [vol]   sets the audio volume
-   up [diff]   volume up by [diff]
-   down [diff] volume down by [diff]
-   mute        mutes the audio
-   unmute      unmutes the audio
-   version     prints the version
-   help        prints this help
+  status      prints the volume status
+  get         prints the current volume
+  set [vol]   sets the audio volume
+  up [diff]   volume up by [diff]
+  down [diff] volume down by [diff]
+  mute        mutes the audio
+  unmute      unmutes the audio
+  version     prints the version
+  help        prints this help
 
 VERSION:
-   %[3]s
+  %[2]s (rev: %[3]s/%[4]s)
 
 AUTHOR:
-   %[4]s
-`, name, description, version, author)
+  %[5]s
+`, name, version, revision, runtime.Version(), author)
 	return nil
 }
