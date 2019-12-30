@@ -1,4 +1,8 @@
 BIN := volume
+VERSION := $$(make -s show-version)
+VERSION_PATH := cmd/$(BIN)
+CURRENT_REVISION := $(shell git rev-parse --short HEAD)
+BUILD_LDFLAGS := "-s -w -X main.revision=$(CURRENT_REVISION)"
 GOBIN ?= $(shell go env GOPATH)/bin
 export GO111MODULE=on
 
@@ -7,11 +11,25 @@ all: clean build
 
 .PHONY: build
 build:
-	go build -o $(BIN) ./cmd/$(BIN)
+	go build -ldflags=$(BUILD_LDFLAGS) -o $(BIN) ./cmd/$(BIN)
 
 .PHONY: install
 install:
-	go install ./...
+	go install -ldflags=$(BUILD_LDFLAGS) ./...
+
+.PHONY: show-version
+show-version: $(GOBIN)/gobump
+	@gobump show -r $(VERSION_PATH)
+
+$(GOBIN)/gobump:
+	@cd && go get github.com/motemen/gobump/cmd/gobump
+
+.PHONY: cross
+cross: $(GOBIN)/goxz
+	goxz -n $(BIN) -pv=v$(VERSION) -include _$(BIN) -build-ldflags=$(BUILD_LDFLAGS) ./cmd/$(BIN)
+
+$(GOBIN)/goxz:
+	cd && go get github.com/Songmu/goxz/cmd/goxz
 
 .PHONY: test
 test: build
@@ -28,5 +46,26 @@ $(GOBIN)/golint:
 
 .PHONY: clean
 clean:
-	rm -rf $(BIN)
+	rm -rf $(BIN) goxz
 	go clean
+
+.PHONY: bump
+bump: $(GOBIN)/gobump
+ifneq ($(shell git status --porcelain),)
+	$(error git workspace is dirty)
+endif
+ifneq ($(shell git branch --show-current),master)
+	$(error current branch is not master)
+endif
+	@gobump up -w "$(VERSION_PATH)"
+	git commit -am "bump up version to $(VERSION)"
+	git tag "v$(VERSION)"
+	git push origin master
+	git push origin "refs/tags/v$(VERSION)"
+
+.PHONY: upload
+upload: $(GOBIN)/ghr
+	ghr "v$(VERSION)" goxz
+
+$(GOBIN)/ghr:
+	cd && go get github.com/tcnksm/ghr
