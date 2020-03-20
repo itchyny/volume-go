@@ -16,6 +16,9 @@ func init() {
 	if _, err := exec.LookPath("pactl"); err != nil {
 		useAmixer = true
 	}
+	if _, err := exec.LookPath("pacmd"); err != nil {
+		useAmixer = true
+	}
 }
 
 func cmdEnv() []string {
@@ -26,17 +29,24 @@ func getVolumeCmd() []string {
 	if useAmixer {
 		return []string{"amixer", "get", "Master"}
 	}
-	return []string{"pactl", "list", "sinks"}
+	return []string{"pacmd", "list-sinks"}
 }
 
 var volumePattern = regexp.MustCompile(`\d+%`)
 
 func parseVolume(out string) (int, error) {
 	lines := strings.Split(out, "\n")
+	pa_default_sink_hooked := false
+
 	for _, line := range lines {
 		s := strings.TrimLeft(line, " \t")
+
+		if !useAmixer && strings.HasPrefix(s, "* index") {
+			pa_default_sink_hooked = true
+		}
+
 		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
-			!useAmixer && strings.HasPrefix(s, "Volume:") {
+			!useAmixer && pa_default_sink_hooked && strings.HasPrefix(s, "volume:") {
 			volumeStr := volumePattern.FindString(s)
 			return strconv.Atoi(volumeStr[:len(volumeStr)-1])
 		}
