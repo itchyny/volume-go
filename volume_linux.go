@@ -53,10 +53,10 @@ var volumePattern = regexp.MustCompile(`\d+%`)
 func parseVolume(out string) (int, error) {
 	sinkName, sinkNameErr := getPADefaultSink()
 
-	pa_default_sink_hooked := false
+	paDefaultSinkHooked := false
 
 	if sinkNameErr != nil {
-		pa_default_sink_hooked = true
+		paDefaultSinkHooked = true
 	}
 
 	lines := strings.Split(out, "\n")
@@ -65,11 +65,11 @@ func parseVolume(out string) (int, error) {
 		s := strings.TrimLeft(line, " \t")
 
 		if !useAmixer && strings.Contains(s, "Name: "+string(sinkName)) {
-			pa_default_sink_hooked = true
+			paDefaultSinkHooked = true
 		}
 
 		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
-			!useAmixer && pa_default_sink_hooked && strings.HasPrefix(s, "Volume:") {
+			!useAmixer && paDefaultSinkHooked && strings.HasPrefix(s, "Volume:") {
 			volumeStr := volumePattern.FindString(s)
 			return strconv.Atoi(volumeStr[:len(volumeStr)-1])
 		}
@@ -108,10 +108,10 @@ func getMutedCmd() []string {
 func parseMuted(out string) (bool, error) {
 	sinkName, sinkNameErr := getPADefaultSink()
 
-	pa_default_sink_hooked := false
+	paDefaultSinkHooked := false
 
 	if sinkNameErr != nil {
-		pa_default_sink_hooked = true
+		paDefaultSinkHooked = true
 	}
 
 	lines := strings.Split(out, "\n")
@@ -119,11 +119,11 @@ func parseMuted(out string) (bool, error) {
 		s := strings.TrimLeft(line, " \t")
 
 		if !useAmixer && strings.Contains(s, "Name: "+string(sinkName)) {
-			pa_default_sink_hooked = true
+			paDefaultSinkHooked = true
 		}
 
 		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
-			!useAmixer && pa_default_sink_hooked && strings.HasPrefix(s, "Mute: ") {
+			!useAmixer && paDefaultSinkHooked && strings.HasPrefix(s, "Mute: ") {
 			if strings.Contains(s, "[off]") || strings.Contains(s, "yes") {
 				return true, nil
 			} else if strings.Contains(s, "[on]") || strings.Contains(s, "no") {
