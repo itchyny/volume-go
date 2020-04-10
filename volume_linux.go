@@ -16,9 +16,6 @@ func init() {
 	if _, err := exec.LookPath("pactl"); err != nil {
 		useAmixer = true
 	}
-	if _, err := exec.LookPath("pacmd"); err != nil {
-		useAmixer = true
-	}
 }
 
 func cmdEnv() []string {
@@ -29,24 +26,50 @@ func getVolumeCmd() []string {
 	if useAmixer {
 		return []string{"amixer", "get", "Master"}
 	}
-	return []string{"pacmd", "list-sinks"}
+	return []string{"pactl", "list", "sinks"}
+}
+
+func getPADefaultSink() (string, error) {
+	out, err := execCmd([]string{"pactl", "info"})
+
+	if err != nil {
+		return "", err
+	}
+
+	lines := strings.Split(string(out), "\n")
+
+	defaultSinkStr := "Default Sink: "
+	for _, line := range lines {
+		s := strings.TrimLeft(line, " \t")
+		if strings.HasPrefix(s, defaultSinkStr) {
+			return strings.TrimSpace(strings.Replace(s, defaultSinkStr, "", 1)), nil
+		}
+	}
+	return "", errors.New("Could not find PulseAudio Default Sink")
 }
 
 var volumePattern = regexp.MustCompile(`\d+%`)
 
 func parseVolume(out string) (int, error) {
-	lines := strings.Split(out, "\n")
+	sinkName, sinkNameErr := getPADefaultSink()
+
 	pa_default_sink_hooked := false
+
+	if sinkNameErr != nil {
+		pa_default_sink_hooked = true
+	}
+
+	lines := strings.Split(out, "\n")
 
 	for _, line := range lines {
 		s := strings.TrimLeft(line, " \t")
 
-		if !useAmixer && strings.HasPrefix(s, "* index") {
+		if !useAmixer && strings.Contains(s, "Name: "+string(sinkName)) {
 			pa_default_sink_hooked = true
 		}
 
 		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
-			!useAmixer && pa_default_sink_hooked && strings.HasPrefix(s, "volume:") {
+			!useAmixer && pa_default_sink_hooked && strings.HasPrefix(s, "Volume:") {
 			volumeStr := volumePattern.FindString(s)
 			return strconv.Atoi(volumeStr[:len(volumeStr)-1])
 		}
@@ -83,11 +106,24 @@ func getMutedCmd() []string {
 }
 
 func parseMuted(out string) (bool, error) {
+	sinkName, sinkNameErr := getPADefaultSink()
+
+	pa_default_sink_hooked := false
+
+	if sinkNameErr != nil {
+		pa_default_sink_hooked = true
+	}
+
 	lines := strings.Split(out, "\n")
 	for _, line := range lines {
 		s := strings.TrimLeft(line, " \t")
+
+		if !useAmixer && strings.Contains(s, "Name: "+string(sinkName)) {
+			pa_default_sink_hooked = true
+		}
+
 		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
-			!useAmixer && strings.HasPrefix(s, "Mute: ") {
+			!useAmixer && pa_default_sink_hooked && strings.HasPrefix(s, "Mute: ") {
 			if strings.Contains(s, "[off]") || strings.Contains(s, "yes") {
 				return true, nil
 			} else if strings.Contains(s, "[on]") || strings.Contains(s, "no") {
