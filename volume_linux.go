@@ -29,14 +29,46 @@ func getVolumeCmd() []string {
 	return []string{"pactl", "list", "sinks"}
 }
 
-var volumePattern = regexp.MustCompile(`\d+%`)
+func getPADefaultSink() (string, error) {
+	out, err := execCmd([]string{"pactl", "info"})
 
-func parseVolume(out string) (int, error) {
-	lines := strings.Split(out, "\n")
+	if err != nil {
+		return "", err
+	}
+
+	lines := strings.Split(string(out), "\n")
+
+	defaultSinkStr := "Default Sink: "
 	for _, line := range lines {
 		s := strings.TrimLeft(line, " \t")
+		if strings.HasPrefix(s, defaultSinkStr) {
+			return strings.TrimSpace(strings.Replace(s, defaultSinkStr, "", 1)), nil
+		}
+	}
+	return "", errors.New("Could not find PulseAudio Default Sink")
+}
+
+func parseVolume(out string) (int, error) {
+	sinkName, sinkNameErr := getPADefaultSink()
+
+	paDefaultSinkHooked := false
+
+	if sinkNameErr != nil {
+		paDefaultSinkHooked = true
+	}
+
+	lines := strings.Split(out, "\n")
+	volumePattern := regexp.MustCompile(`\d+%`)
+
+	for _, line := range lines {
+		s := strings.TrimLeft(line, " \t")
+
+		if !useAmixer && strings.Contains(s, "Name: "+string(sinkName)) {
+			paDefaultSinkHooked = true
+		}
+
 		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
-			!useAmixer && strings.HasPrefix(s, "Volume:") {
+			!useAmixer && paDefaultSinkHooked && strings.HasPrefix(s, "Volume:") {
 			volumeStr := volumePattern.FindString(s)
 			return strconv.Atoi(volumeStr[:len(volumeStr)-1])
 		}
@@ -48,7 +80,7 @@ func setVolumeCmd(volume int) []string {
 	if useAmixer {
 		return []string{"amixer", "set", "Master", strconv.Itoa(volume) + "%"}
 	}
-	return []string{"pactl", "set-sink-volume", "0", strconv.Itoa(volume) + "%"}
+	return []string{"pactl", "set-sink-volume", "@DEFAULT_SINK@", strconv.Itoa(volume) + "%"}
 }
 
 func increaseVolumeCmd(diff int) []string {
@@ -62,7 +94,7 @@ func increaseVolumeCmd(diff int) []string {
 	if useAmixer {
 		return []string{"amixer", "set", "Master", strconv.Itoa(diff) + "%" + sign}
 	}
-	return []string{"pactl", "--", "set-sink-volume", "0", sign + strconv.Itoa(diff) + "%"}
+	return []string{"pactl", "--", "set-sink-volume", "@DEFAULT_SINK@", sign + strconv.Itoa(diff) + "%"}
 }
 
 func getMutedCmd() []string {
@@ -73,11 +105,24 @@ func getMutedCmd() []string {
 }
 
 func parseMuted(out string) (bool, error) {
+	sinkName, sinkNameErr := getPADefaultSink()
+
+	paDefaultSinkHooked := false
+
+	if sinkNameErr != nil {
+		paDefaultSinkHooked = true
+	}
+
 	lines := strings.Split(out, "\n")
 	for _, line := range lines {
 		s := strings.TrimLeft(line, " \t")
+
+		if !useAmixer && strings.Contains(s, "Name: "+string(sinkName)) {
+			paDefaultSinkHooked = true
+		}
+
 		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
-			!useAmixer && strings.HasPrefix(s, "Mute: ") {
+			!useAmixer && paDefaultSinkHooked && strings.HasPrefix(s, "Mute: ") {
 			if strings.Contains(s, "[off]") || strings.Contains(s, "yes") {
 				return true, nil
 			} else if strings.Contains(s, "[on]") || strings.Contains(s, "no") {
@@ -92,12 +137,12 @@ func muteCmd() []string {
 	if useAmixer {
 		return []string{"amixer", "-D", "pulse", "set", "Master", "mute"}
 	}
-	return []string{"pactl", "set-sink-mute", "0", "1"}
+	return []string{"pactl", "set-sink-mute", "@DEFAULT_SINK@", "1"}
 }
 
 func unmuteCmd() []string {
 	if useAmixer {
 		return []string{"amixer", "-D", "pulse", "set", "Master", "unmute"}
 	}
-	return []string{"pactl", "set-sink-mute", "0", "0"}
+	return []string{"pactl", "set-sink-mute", "@DEFAULT_SINK@", "0"}
 }
