@@ -5,7 +5,7 @@ import (
 	"math"
 
 	"github.com/go-ole/go-ole"
-	"github.com/moutend/go-wca"
+	"github.com/moutend/go-wca/pkg/wca"
 )
 
 // GetVolume returns the current volume (0 to 100).
