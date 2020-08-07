@@ -1,5 +1,11 @@
-# volume-go [![CI Status][ci-badge]][ci-url] [![Go Report Card][goreportcard-badge]][goreportcard-url] [![MIT License][license-badge]][license-url] [![PkgGoDev][pkggodev-badge]][pkggodev-url]
-### Volume control in Go
+# volume-go
+[![CI Status](https://github.com/itchyny/volume-go/workflows/CI/badge.svg)](https://github.com/itchyny/volume-go/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/itchyny/volume-go)](https://goreportcard.com/report/github.com/itchyny/volume-go)
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/itchyny/volume-go/blob/master/LICENSE)
+[![release](https://img.shields.io/github/release/itchyny/volume-go/all.svg)](https://github.com/itchyny/volume-go/releases)
+[![pkg.go.dev](https://pkg.go.dev/badge/github.com/itchyny/volume-go)](https://pkg.go.dev/github.com/itchyny/volume-go)
+
+### Cross-platform audio volume control library for Go language
 This is a Go language package for controlling audio volume.
 
 ## volume command
@@ -16,7 +22,7 @@ go get github.com/itchyny/volume-go/cmd/volume
 ### Basic usage
 ```sh
  $ # Get the current audio volume.
- $ volume get 
+ $ volume get
 20
 
  $ # Set the audio volume.
@@ -97,12 +103,3 @@ itchyny (https://github.com/itchyny)
 
 ## License
 This software is released under the MIT License, see LICENSE.
-
-[ci-url]: https://github.com/itchyny/volume-go/actions
-[ci-badge]: https://github.com/itchyny/volume-go/workflows/CI/badge.svg
-[goreportcard-url]: https://goreportcard.com/report/github.com/itchyny/volume-go
-[goreportcard-badge]: https://goreportcard.com/badge/github.com/itchyny/volume-go
-[license-url]: https://github.com/itchyny/volume-go/blob/master/LICENSE
-[license-badge]: http://img.shields.io/badge/license-MIT-blue.svg
-[pkggodev-url]: https://pkg.go.dev/github.com/itchyny/volume-go
-[pkggodev-badge]: https://pkg.go.dev/badge/github.com/itchyny/volume-go
