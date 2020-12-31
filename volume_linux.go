@@ -4,7 +4,6 @@ package volume
 
 import (
 	"errors"
-	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,7 +12,7 @@ import (
 var useAmixer bool
 
 func init() {
-	if _, err := exec.LookPath("pactl"); err != nil {
+        if _, err := execCmd([]string{"pactl", "info"}); err != nil {
 		useAmixer = true
 	}
 }
