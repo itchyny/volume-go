@@ -1,2 +1,5 @@
-/goxz
 /volume
+/goxz
+*.exe
+*.test
+*.out
