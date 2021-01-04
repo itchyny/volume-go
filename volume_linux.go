@@ -12,7 +12,7 @@ import (
 var useAmixer bool
 
 func init() {
-        if _, err := execCmd([]string{"pactl", "info"}); err != nil {
+	if _, err := execCmd([]string{"pactl", "info"}); err != nil {
 		useAmixer = true
 	}
 }
