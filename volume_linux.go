@@ -30,7 +30,6 @@ func getVolumeCmd() []string {
 
 func getPADefaultSink() (string, error) {
 	out, err := execCmd([]string{"pactl", "info"})
-
 	if err != nil {
 		return "", err
 	}
