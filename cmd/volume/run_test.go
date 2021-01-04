@@ -48,7 +48,7 @@ func TestRunHelp(t *testing.T) {
 	if err := run([]string{"help"}, out); err != nil {
 		t.Errorf("version failed: %+v", err)
 	}
-	for _, expected := range []string{"USAGE:", "COMMANDS:", "VERSION:", "AUTHOR:"} {
+	for _, expected := range []string{"USAGE:", "COMMANDS:", "VERSION:"} {
 		if !strings.Contains(out.String(), expected) {
 			t.Errorf("version failed: (got: %+v, expected to contain: %+v)", out.String(), expected)
 		}

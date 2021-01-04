@@ -126,9 +126,6 @@ COMMANDS:
 
 VERSION:
   %[2]s (rev: %[3]s/%[4]s)
-
-AUTHOR:
-  %[5]s
-`, name, version, revision, runtime.Version(), author)
+`, name, version, revision, runtime.Version())
 	return nil
 }

@@ -7,7 +7,6 @@ import (
 
 const name = "volume"
 const version = "0.2.0"
-const author = "itchyny"
 
 var revision = "HEAD"
 
