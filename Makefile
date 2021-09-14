@@ -25,11 +25,18 @@ $(GOBIN)/gobump:
 	@go install github.com/x-motemen/gobump/cmd/gobump@latest
 
 .PHONY: cross
-cross: $(GOBIN)/goxz
+cross: $(GOBIN)/goxz CREDITS
 	goxz -n $(BIN) -pv=v$(VERSION) -include _$(BIN) -build-ldflags=$(BUILD_LDFLAGS) ./cmd/$(BIN)
 
 $(GOBIN)/goxz:
 	go install github.com/Songmu/goxz/cmd/goxz@latest
+
+CREDITS: $(GOBIN)/gocredits go.sum
+	go mod tidy
+	gocredits -w .
+
+$(GOBIN)/gocredits:
+	go install github.com/Songmu/gocredits/cmd/gocredits@latest
 
 .PHONY: test
 test: build
@@ -46,7 +53,7 @@ $(GOBIN)/staticcheck:
 
 .PHONY: clean
 clean:
-	rm -rf $(BIN) goxz
+	rm -rf $(BIN) goxz CREDITS
 	go clean
 
 .PHONY: bump
