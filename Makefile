@@ -40,8 +40,8 @@ $(GOBIN)/gocredits:
 
 .PHONY: test
 test: build
-	go test -v .
-	go test -v ./cmd/$(BIN)
+	go test -v -race .
+	go test -v -race ./cmd/$(BIN)
 
 .PHONY: lint
 lint: $(GOBIN)/staticcheck
