@@ -16,7 +16,7 @@ brew install itchyny/tap/volume
 
 ### Build from source
 ```sh
-go get github.com/itchyny/volume-go/cmd/volume
+go install github.com/itchyny/volume-go/cmd/volume@latest
 ```
 
 ### Basic usage
