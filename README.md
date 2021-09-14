@@ -1,7 +1,7 @@
 # volume-go
 [![CI Status](https://github.com/itchyny/volume-go/workflows/CI/badge.svg)](https://github.com/itchyny/volume-go/actions)
 [![Go Report Card](https://goreportcard.com/badge/github.com/itchyny/volume-go)](https://goreportcard.com/report/github.com/itchyny/volume-go)
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/itchyny/volume-go/blob/master/LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/itchyny/volume-go/blob/master/LICENSE)
 [![release](https://img.shields.io/github/release/itchyny/volume-go/all.svg)](https://github.com/itchyny/volume-go/releases)
 [![pkg.go.dev](https://pkg.go.dev/badge/github.com/itchyny/volume-go)](https://pkg.go.dev/github.com/itchyny/volume-go)
 
