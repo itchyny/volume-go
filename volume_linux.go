@@ -43,7 +43,7 @@ func getPADefaultSink() (string, error) {
 			return strings.TrimSpace(strings.Replace(s, defaultSinkStr, "", 1)), nil
 		}
 	}
-	return "", errors.New("Could not find PulseAudio Default Sink")
+	return "", errors.New("could not find PulseAudio Default Sink")
 }
 
 var volumePattern = regexp.MustCompile(`\d+%`)
