@@ -1,0 +1,54 @@
+#!/bin/bash
+
+volume=/tmp/pactl-volume
+if ! [[ -f "$volume" ]]; then
+  echo "30" >"$volume"
+fi
+
+mute=/tmp/pactl-mute
+if ! [[ -f "$mute" ]]; then
+  echo "no" >"$mute"
+fi
+
+if [[ "${1:-command required}" = "--" ]]; then
+  shift
+fi
+
+case "$1" in
+  info)
+    echo "Default Sink: DEFAULT_SINK"
+    ;;
+
+  list)
+    echo "Name: DEFAULT_SINK"
+    echo "  Volume: 0: $(cat "$volume")%"
+    echo "  Mute: $(cat "$mute")"
+    ;;
+
+  set-sink-volume)
+    case "$3" in
+      +* | -*)
+        e="$(cat "$volume") ${3%%%}"
+        v="$((e))"
+        if [[ "$v" -lt 0 ]]; then
+          v=0
+        fi
+        echo "$v" >"$volume"
+        ;;
+      *)
+        echo "${3%%%}" >"$volume"
+        ;;
+    esac
+    ;;
+
+  set-sink-mute)
+    case "$3" in
+      1)
+        echo "yes" >"$mute"
+        ;;
+      *)
+        echo "no" >"$mute"
+        ;;
+    esac
+    ;;
+esac

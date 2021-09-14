@@ -16,9 +16,7 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.x
-    - name: Install pulseaudio
-      run: sudo apt-get update; sudo apt-get install -y pulseaudio
     - name: Test
-      run: make test
+      run: env PATH=$PWD/testdata/:$PATH make test
     - name: Lint
       run: make lint
