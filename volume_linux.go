@@ -29,7 +29,7 @@ func getVolumeCmd() []string {
 	return []string{"pactl", "list", "sinks"}
 }
 
-func getPADefaultSink() (string, error) {
+func getPulseAudioDefaultSink() (string, error) {
 	out, err := execCmd([]string{"pactl", "info"})
 	if err != nil {
 		return "", err
@@ -50,25 +50,20 @@ func getPADefaultSink() (string, error) {
 var volumePattern = regexp.MustCompile(`\d+%`)
 
 func parseVolume(out string) (int, error) {
-	sinkName, sinkNameErr := getPADefaultSink()
-
-	paDefaultSinkHooked := false
-
-	if sinkNameErr != nil {
-		paDefaultSinkHooked = true
-	}
+	sinkName, sinkNameErr := getPulseAudioDefaultSink()
+	isDefaultSink := sinkNameErr != nil
 
 	lines := strings.Split(out, "\n")
 
 	for _, line := range lines {
 		s := strings.TrimLeft(line, " \t")
 
-		if !useAmixer && strings.Contains(s, "Name: "+string(sinkName)) {
-			paDefaultSinkHooked = true
+		if !useAmixer && !isDefaultSink && strings.Contains(s, "Name: "+sinkName) {
+			isDefaultSink = true
 		}
 
 		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
-			!useAmixer && paDefaultSinkHooked && strings.HasPrefix(s, "Volume:") {
+			!useAmixer && isDefaultSink && strings.HasPrefix(s, "Volume:") {
 			volumeStr := volumePattern.FindString(s)
 			return strconv.Atoi(volumeStr[:len(volumeStr)-1])
 		}
@@ -105,24 +100,19 @@ func getMutedCmd() []string {
 }
 
 func parseMuted(out string) (bool, error) {
-	sinkName, sinkNameErr := getPADefaultSink()
-
-	paDefaultSinkHooked := false
-
-	if sinkNameErr != nil {
-		paDefaultSinkHooked = true
-	}
+	sinkName, sinkNameErr := getPulseAudioDefaultSink()
+	isDefaultSink := sinkNameErr != nil
 
 	lines := strings.Split(out, "\n")
 	for _, line := range lines {
 		s := strings.TrimLeft(line, " \t")
 
-		if !useAmixer && strings.Contains(s, "Name: "+string(sinkName)) {
-			paDefaultSinkHooked = true
+		if !useAmixer && !isDefaultSink && strings.Contains(s, "Name: "+sinkName) {
+			isDefaultSink = true
 		}
 
 		if useAmixer && strings.Contains(s, "Playback") && strings.Contains(s, "%") ||
-			!useAmixer && paDefaultSinkHooked && strings.HasPrefix(s, "Mute: ") {
+			!useAmixer && isDefaultSink && strings.HasPrefix(s, "Mute: ") {
 			if strings.Contains(s, "[off]") || strings.Contains(s, "yes") {
 				return true, nil
 			} else if strings.Contains(s, "[on]") || strings.Contains(s, "no") {
