@@ -1,8 +1,8 @@
 BIN := volume
 VERSION := $$(make -s show-version)
 VERSION_PATH := cmd/$(BIN)
-CURRENT_REVISION := $(shell git rev-parse --short HEAD)
-BUILD_LDFLAGS := "-s -w -X main.revision=$(CURRENT_REVISION)"
+CURRENT_REVISION = $(shell git rev-parse --short HEAD)
+BUILD_LDFLAGS = "-s -w -X main.revision=$(CURRENT_REVISION)"
 GOBIN ?= $(shell go env GOPATH)/bin
 
 .PHONY: all
@@ -18,7 +18,7 @@ install:
 
 .PHONY: show-version
 show-version: $(GOBIN)/gobump
-	@gobump show -r $(VERSION_PATH)
+	@gobump show -r "$(VERSION_PATH)"
 
 $(GOBIN)/gobump:
 	@go install github.com/x-motemen/gobump/cmd/gobump@latest
