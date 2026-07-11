@@ -1,6 +1,5 @@
 # volume-go
-[![CI Status](https://github.com/itchyny/volume-go/workflows/CI/badge.svg)](https://github.com/itchyny/volume-go/actions)
-[![Go Report Card](https://goreportcard.com/badge/github.com/itchyny/volume-go)](https://goreportcard.com/report/github.com/itchyny/volume-go)
+[![CI Status](https://github.com/itchyny/volume-go/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/itchyny/volume-go/actions/workflows/ci.yaml?query=branch:main)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/itchyny/volume-go/blob/main/LICENSE)
 [![release](https://img.shields.io/github/release/itchyny/volume-go/all.svg)](https://github.com/itchyny/volume-go/releases)
 [![pkg.go.dev](https://pkg.go.dev/badge/github.com/itchyny/volume-go)](https://pkg.go.dev/github.com/itchyny/volume-go)
@@ -99,7 +98,7 @@ func main() {
 Report bug at [Issues・itchyny/volume-go - GitHub](https://github.com/itchyny/volume-go/issues).
 
 ## Author
-itchyny (https://github.com/itchyny)
+itchyny (<https://github.com/itchyny>)
 
 ## License
 This software is released under the MIT License, see LICENSE.

@@ -14,7 +14,7 @@ build:
 
 .PHONY: install
 install:
-	go install -ldflags=$(BUILD_LDFLAGS) ./...
+	go install -ldflags=$(BUILD_LDFLAGS) ./cmd/$(BIN)
 
 .PHONY: show-version
 show-version: $(GOBIN)/gobump
@@ -25,8 +25,7 @@ $(GOBIN)/gobump:
 
 .PHONY: cross
 cross: $(GOBIN)/goxz CREDITS
-	goxz -n $(BIN) -pv=v$(VERSION) -include _$(BIN) \
-		-build-ldflags=$(BUILD_LDFLAGS) ./cmd/$(BIN)
+	goxz -n $(BIN) -pv=v$(VERSION) -build-ldflags=$(BUILD_LDFLAGS) ./cmd/$(BIN)
 
 $(GOBIN)/goxz:
 	go install github.com/Songmu/goxz/cmd/goxz@latest
@@ -63,11 +62,4 @@ bump: $(GOBIN)/gobump
 	@gobump up -w "$(VERSION_PATH)"
 	git commit -am "bump up version to $(VERSION)"
 	git tag "v$(VERSION)"
-	git push --atomic origin main "v$(VERSION)"
-
-.PHONY: upload
-upload: $(GOBIN)/ghr
-	ghr "v$(VERSION)" goxz
-
-$(GOBIN)/ghr:
-	go install github.com/tcnksm/ghr@latest
+	git push --atomic origin main tag "v$(VERSION)"
